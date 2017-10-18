@@ -52,6 +52,8 @@ app.use(bodyParser.json({ verify: verifyRequestSignature }));
 app.post('/webhook', function (req, res) {
   var data = req.body;
 
+  console.log("/webhook: ", JSON.stringify(data));
+
   // Make sure this is a page subscription
   if (data.object === 'page') {
 
@@ -66,9 +68,11 @@ app.post('/webhook', function (req, res) {
         } else if (event.message && event.message.quick_reply) {
           receivedQuickReply(event);
         }
-        // Si es un mensaje de texto y no es enviado por mi mismo lo analizo con wit
         else if (event.message && event.message.text) {
           receivedMessage(event);
+        }
+        else if (event.message.attachments) {
+          callSendAPI(sendTextMessage(event.sender.id, "Por el momento no podemos procesar mensages con archivos adjuntos."));
         }
         else {
           console.log("Webhook received unknown event: ", JSON.stringify(entry));
@@ -94,13 +98,10 @@ function receivedMessage(event) {
 
   if (message.text) {
     clientWit.message(message.text, {})
-    .then((data) => {
-      callSendAPI(process.processText(event, data));
+    .then((responseWit) => {
+      callSendAPI(process.processText(event, responseWit, message.text));
     })
     .catch(console.error);
-  }
-  else if (message.attachments) {
-    callSendAPI(sendTextMessage(senderID, "Por el momento no podemos procesar mensages con archivos adjuntos."));
   }
 }
 

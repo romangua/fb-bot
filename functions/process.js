@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const redis = require('./redis');
 
 const MENSAJE_INICIAL = "mensaje_inicial";
 const EMPEZAR_DE_NUEVO_PAYLOAD = "EMPEZAR_DE_NUEVO_PAYLOAD";
@@ -9,39 +10,37 @@ const ARMO_MI_VIAJE_PAYLOAD = "ARMO_MI_VIAJE_PAYLOAD";
 const ARMO_MI_VIAJE_VUELOS_PAYLOAD = "ARMO_MI_VIAJE_VUELOS_PAYLOAD";
 const ARMO_MI_VIAJE_HOTELES_PAYLOAD = "ARMO_MI_VIAJE_HOTELES_PAYLOAD";
 
-exports.processText = function(event, data) {
+exports.processText = function(event, responseWit, menssageOrigin) {
   var messageText = "No se reconoce el texto ingresado. Reintente por favor";
 
-  if(!_.isEmpty(data.entities)) {
+  if(!_.isEmpty(responseWit.entities)) {
 
-    console.log("Respuesta wit: " + JSON.stringify(data));
+    console.log("Respuesta wit: " + JSON.stringify(responseWit));
     // Tipo fecha
-    if(data.entities.datetime) {
-      data.entities.datetime.forEach(function(datetime) {
+    if(responseWit.entities.datetime) {
+      responseWit.entities.datetime.forEach(function(datetime) {
         var confidence = datetime.confidence;
         var value = datetime.value;
 
         messageText = confidence + " " + value;
       });
     }
-    // Tipo location
-    else if(data.entities.location) {
-        var confidence = data.entities.location.confidence;
-        var value = data.entities.location.value;
-        return ciudadIndicadaMessage(event.sender.id);
-    }
-    // Texto sin intent especial
-    else if(data.entities.intent) {
-      data.entities.intent.forEach(function(intent) {
+    /*// Texto sin intent especial
+    else if(responseWit.entities.intent) {
+      responseWit.entities.intent.forEach(function(intent) {
         var confidence = intent.confidence;
         var value = intent.value;
 
         if(confidence > 0.7) {
-          if(value == MENSAJE_INICIAL)
-            return initMessage(event.sender.id);
+          // Podriamos trabajar flujos sobre diferentes intent, en este caso
+          // si viene un intent directamente vuelvo al saludo inicial
+          //if(value == MENSAJE_INICIAL)
+          return initMessage(event.sender.id);
         }
       });
-    }
+    }*/
+  } else {
+    messageText = menssageOrigin;
   }
   return sendTextMessage(event.sender.id, messageText);
 }
@@ -62,8 +61,12 @@ exports.processPostBack = function(event) {
 
 exports.processQuickReply = function(event) {
   let message = "No se reconoce processQuickReply";
+
   switch (event.message.quick_reply.payload) {
     case EMPEZAR_SORPRENDEME_PAYLOAD:
+      message = "¿Desde qué ciudad salis?";
+      break;
+
     case ARMO_MI_VIAJE_VUELOS_PAYLOAD:
       message = "¿Desde qué ciudad salis?";
       break;
