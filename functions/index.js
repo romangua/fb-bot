@@ -7,14 +7,9 @@ const bodyParser = require('body-parser');
 const request = require('request');
 const fetch = require('node-fetch');
 const crypto = require('crypto');
-const {Wit, log} = require('node-wit');
 const process = require('./process');
 
-// Wit.ai parameters
-const WIT_TOKEN = "MFZICCEHCMS2DXKNQMLZFN4XDMAIP4GF";
-
 //Messenger API parameters
-const FB_PAGE_TOKEN = "EAACkkvctpEwBABa80xLN7MSdnU7JzuoBAAg5chUiIcEIE8Gq1v4OboHKCRcZBQ4q2MOAGofrKP53N0PnOC3zduyzI5nP9mJ1nf33usfA9ELtuYwfvGVqIoUrbKpptxsZCkkdLvS5adF58G0FrWrZATLBEDUe3IwFc8z5ZAfoDgZDZD";
 const FB_APP_SECRET = "002a1bc533d92ffa4ff370b16ce00b8e";
 let FB_VERIFY_TOKEN = null;
 crypto.randomBytes(8, (err, buff) => {
@@ -32,9 +27,6 @@ var config = {
     messagingSenderId: "579671298783"
 };
 firebase.initializeApp(config);
-
-// Setting up our bot
-const clientWit = new Wit({accessToken: WIT_TOKEN});
 
 // Starting our webserver
 const app = express();
@@ -64,15 +56,15 @@ app.post('/webhook', function (req, res) {
 
       entry.messaging.forEach(function(event) {
         if (event.postback) {
-          receivedPostback(event);
+          process.processPostBack(event);
         } else if (event.message && event.message.quick_reply) {
-          receivedQuickReply(event);
+          process.processQuickReply(event);
         }
         else if (event.message && event.message.text) {
-          receivedMessage(event);
+          process.processText(event);
         }
         else if (event.message.attachments) {
-          callSendAPI(sendTextMessage(event.sender.id, "Por el momento no podemos procesar mensages con archivos adjuntos."));
+          process.processAtachments();
         }
         else {
           console.log("Webhook received unknown event: ", JSON.stringify(entry));
@@ -88,119 +80,6 @@ app.post('/webhook', function (req, res) {
     res.sendStatus(200);
   }
 });
-
-function receivedMessage(event) {
-  var senderID = event.sender.id;
-  var recipientID = event.recipient.id;
-  var message = event.message;
-
-  console.log("receivedMessage: " + JSON.stringify(event));
-
-  if (message.text) {
-    clientWit.message(message.text, {})
-    .then((responseWit) => {
-      callSendAPI(process.processText(event, responseWit, message.text));
-    })
-    .catch(console.error);
-  }
-}
-
-function receivedPostback(event) {
-  console.log("receivedPostback: " + JSON.stringify(event));
-
-  var responseProcess = process.processPostBack(event);
-  callSendAPI(responseProcess);
-}
-
-function receivedQuickReply(event) {
-  console.log("receivedQuickReply: " + JSON.stringify(event));
-
-  var responseProcess = process.processQuickReply(event);
-  callSendAPI(responseProcess);
-}
-
-function callSendAPI(messageData) {
-  console.log("Mensaje a enviar: " + JSON.stringify(messageData));
-
-  request({
-    uri: 'https://graph.facebook.com/v2.6/me/messages',
-    qs: { access_token: FB_PAGE_TOKEN },
-    method: 'POST',
-    json: messageData
-
-  }, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
-      var recipientId = body.recipient_id;
-      var messageId = body.message_id;
-
-      console.log("Successfully sent message with id %s to recipient %s",
-        messageId, recipientId);
-    } else {
-      console.error("Unable to send message.");
-      console.error(response);
-      console.error(error);
-    }
-  });
-}
-
-function sendTextMessage (recipientId, messageText) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-    message: {
-      text: messageText
-    }
-  };
-  return messageData;
-}
-
-function sendGenericMessage(recipientId) {
-  var messageData = {
-    recipient: {
-      id: recipientId
-    },
-    message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "generic",
-          elements: [{
-            title: "rift",
-            subtitle: "Next-generation virtual reality",
-            item_url: "https://www.oculus.com/en-us/rift/",
-            image_url: "http://messengerdemo.parseapp.com/img/rift.png",
-            buttons: [{
-              type: "web_url",
-              url: "https://www.oculus.com/en-us/rift/",
-              title: "Open Web URL"
-            }, {
-              type: "postback",
-              title: "Call Postback",
-              payload: "Payload for first bubble",
-            }],
-          }, {
-            title: "touch",
-            subtitle: "Your Hands, Now in VR",
-            item_url: "https://www.oculus.com/en-us/touch/",
-            image_url: "http://messengerdemo.parseapp.com/img/touch.png",
-            buttons: [{
-              type: "web_url",
-              url: "https://www.oculus.com/en-us/touch/",
-              title: "Open Web URL"
-            }, {
-              type: "postback",
-              title: "Call Postback",
-              payload: "Payload for second bubble",
-            }]
-          }]
-        }
-      }
-    }
-  };
-
-  callSendAPI(messageData);
-}
 
 // Webhook setup
 app.get('/webhook', (req, res) => {
