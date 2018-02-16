@@ -1,0 +1,182 @@
+{
+	"variables": [],
+	"info": {
+		"name": "FacebookBot",
+		"_postman_id": "6386461a-2470-26d4-9e62-d529058e7a0a",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Bot Facebook",
+			"description": "",
+			"item": [
+				{
+					"name": "Consulta Wit",
+					"request": {
+						"url": {
+							"raw": "https://api.wit.ai/message?q=hola",
+							"protocol": "https",
+							"host": [
+								"api",
+								"wit",
+								"ai"
+							],
+							"path": [
+								"message"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "hola",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer MFZICCEHCMS2DXKNQMLZFN4XDMAIP4GF",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Consultar una propiedad en particular",
+					"request": {
+						"url": {
+							"raw": "https://graph.facebook.com/v2.6/me/messenger_profile?fields=persistent_menu&access_token=EAACkkvctpEwBABa80xLN7MSdnU7JzuoBAAg5chUiIcEIE8Gq1v4OboHKCRcZBQ4q2MOAGofrKP53N0PnOC3zduyzI5nP9mJ1nf33usfA9ELtuYwfvGVqIoUrbKpptxsZCkkdLvS5adF58G0FrWrZATLBEDUe3IwFc8z5ZAfoDgZDZD",
+							"protocol": "https",
+							"host": [
+								"graph",
+								"facebook",
+								"com"
+							],
+							"path": [
+								"v2.6",
+								"me",
+								"messenger_profile"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "persistent_menu",
+									"equals": true,
+									"description": ""
+								},
+								{
+									"key": "access_token",
+									"value": "EAACkkvctpEwBABa80xLN7MSdnU7JzuoBAAg5chUiIcEIE8Gq1v4OboHKCRcZBQ4q2MOAGofrKP53N0PnOC3zduyzI5nP9mJ1nf33usfA9ELtuYwfvGVqIoUrbKpptxsZCkkdLvS5adF58G0FrWrZATLBEDUe3IwFc8z5ZAfoDgZDZD",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Menu fijo",
+					"request": {
+						"url": {
+							"raw": "https://graph.facebook.com/v2.6/me/messenger_profile?access_token=EAACkkvctpEwBAFaBJ16TmsAPkGPMcDIksqfGZA1ZAudELnoEVjZBNXFsyVyEFXsgyVjkhUHZBZADZCGsFZA6zwyZCGOXsNqZB2b55KZBsjpYBZBqCZAZA1MtHZC8YvZCHKbYoZCHU9TfGklQ5W1wZANRhR2TjgDQSlk9rIZBpmXkJgeuBuckzpDgZDZD",
+							"protocol": "https",
+							"host": [
+								"graph",
+								"facebook",
+								"com"
+							],
+							"path": [
+								"v2.6",
+								"me",
+								"messenger_profile"
+							],
+							"query": [
+								{
+									"key": "access_token",
+									"value": "EAACkkvctpEwBAFaBJ16TmsAPkGPMcDIksqfGZA1ZAudELnoEVjZBNXFsyVyEFXsgyVjkhUHZBZADZCGsFZA6zwyZCGOXsNqZB2b55KZBsjpYBZBqCZAZA1MtHZC8YvZCHKbYoZCHU9TfGklQ5W1wZANRhR2TjgDQSlk9rIZBpmXkJgeuBuckzpDgZDZD",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type: application/json",
+								"value": "",
+								"description": ""
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"persistent_menu\": [\n    {\n      \"locale\": \"default\",\n      \"composer_input_disabled\": false,\n      \"call_to_actions\": [\n    \t{\n    \t\t\"type\": \"postback\",\n    \t\t\"title\": \"Empezar de nuevo\",\n            \"payload\": \"EMPEZAR_DE_NUEVO_PAYLOAD\"\n        },\n        {\n        \t\"type\": \"web_url\",\n            \"title\": \"Visitar web\",\n            \"url\": \"https://almundo.com.ar/\",\n            \"webview_height_ratio\": \"full\"\n        }\n      ]\n    }\n  ]\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "Boton Inicial",
+					"request": {
+						"url": {
+							"raw": "https://graph.facebook.com/v2.6/me/messenger_profile?access_token=EAACkkvctpEwBAFaBJ16TmsAPkGPMcDIksqfGZA1ZAudELnoEVjZBNXFsyVyEFXsgyVjkhUHZBZADZCGsFZA6zwyZCGOXsNqZB2b55KZBsjpYBZBqCZAZA1MtHZC8YvZCHKbYoZCHU9TfGklQ5W1wZANRhR2TjgDQSlk9rIZBpmXkJgeuBuckzpDgZDZD",
+							"protocol": "https",
+							"host": [
+								"graph",
+								"facebook",
+								"com"
+							],
+							"path": [
+								"v2.6",
+								"me",
+								"messenger_profile"
+							],
+							"query": [
+								{
+									"key": "access_token",
+									"value": "EAACkkvctpEwBAFaBJ16TmsAPkGPMcDIksqfGZA1ZAudELnoEVjZBNXFsyVyEFXsgyVjkhUHZBZADZCGsFZA6zwyZCGOXsNqZB2b55KZBsjpYBZBqCZAZA1MtHZC8YvZCHKbYoZCHU9TfGklQ5W1wZANRhR2TjgDQSlk9rIZBpmXkJgeuBuckzpDgZDZD",
+									"equals": true,
+									"description": ""
+								}
+							],
+							"variable": []
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"get_started\": {\n        \"payload\": \"EMPEZAR\"\n    }\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

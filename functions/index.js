@@ -10,7 +10,11 @@ const crypto = require('crypto');
 const process = require('./process');
 
 //Messenger API parameters
+// De la pagina que va a tener el bot
 const FB_APP_SECRET = "002a1bc533d92ffa4ff370b16ce00b8e";
+// La primera vez que se prueba el webhook hardcodear este codigo y comentar
+// la funcion randomBytes. EL mismo codigo hardcodeado ponerlo en la pagina
+// para configurar el webhook.
 let FB_VERIFY_TOKEN = null;
 crypto.randomBytes(8, (err, buff) => {
   if (err) throw err;
@@ -82,6 +86,7 @@ app.post('/webhook', function (req, res) {
 });
 
 // Webhook setup
+// En este metodo hardcodeat el verify_token
 app.get('/webhook', (req, res) => {
   if (req.query['hub.mode'] === 'subscribe' &&
     req.query['hub.verify_token'] === FB_VERIFY_TOKEN) {

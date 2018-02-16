@@ -1,0 +1,118 @@
+1) Entrar a https://developers.facebook.com/apps y crear una app que se va a asignar a una pagina de facebook.
+
+2) Configurar todo siguiendo esta guía. https://developers.facebook.com/docs/messenger-platform/getting-started/quick-start
+
+
+** Consultar una propiedad en particular: en este caso get_started
+curl -X GET "https://graph.facebook.com/v2.6/me/messenger_profile?fields=persistent_menu&access_token= EAACkkvctpEwBAFaBJ16TmsAPkGPMcDIksqfGZA1ZAudELnoEVjZBNXFsyVyEFXsgyVjkhUHZBZADZCGsFZA6zwyZCGOXsNqZB2b55KZBsjpYBZBqCZAZA1MtHZC8YvZCHKbYoZCHU9TfGklQ5W1wZANRhR2TjgDQSlk9rIZBpmXkJgeuBuckzpDgZDZD"
+
+SETEAR PROPIEDADES
+* Boton empezar
+* https://developers.facebook.com/docs/messenger-platform/reference/messenger-profile-api/get-started-button
+curl -X POST -H "Content-Type: application/json" -d '{ 
+   "get_started":{
+      "title":"Empezar" 
+      "payload":”EMPEZAR"
+    }
+}' "https://graph.facebook.com/v2.6/me/messenger_profile?access_token=EAACkkvctpEwBAFaBJ16TmsAPkGPMcDIksqfGZA1ZAudELnoEVjZBNXFsyVyEFXsgyVjkhUHZBZADZCGsFZA6zwyZCGOXsNqZB2b55KZBsjpYBZBqCZAZA1MtHZC8YvZCHKbYoZCHU9TfGklQ5W1wZANRhR2TjgDQSlk9rIZBpmXkJgeuBuckzpDgZDZD"
+
+
+* Saludo inicial (se puede armar un array para diferentes idiomas.
+* https://developers.facebook.com/docs/messenger-platform/reference/messenger-profile-api/greeting
+*
+curl -X POST -H "Content-Type: application/json" -d '{ 
+   "greeting":[
+  {
+    "locale":"default",
+    "text":"¡Hola!  Mi  nombre es Kevin y te voy a ayudar con tus consultas"
+  }
+]
+}' "https://graph.facebook.com/v2.6/me/messenger_profile?access_token= EAACkkvctpEwBAFaBJ16TmsAPkGPMcDIksqfGZA1ZAudELnoEVjZBNXFsyVyEFXsgyVjkhUHZBZADZCGsFZA6zwyZCGOXsNqZB2b55KZBsjpYBZBqCZAZA1MtHZC8YvZCHKbYoZCHU9TfGklQ5W1wZANRhR2TjgDQSlk9rIZBpmXkJgeuBuckzpDgZDZD" 
+
+
+* Menu fijo
+* https://developers.facebook.com/docs/messenger-platform/reference/messenger-profile-api/persistent-menu
+*
+curl -X POST -H "Content-Type: application/json" -d '{
+  "persistent_menu": [
+    {
+      "locale": "default",
+      "composer_input_disabled": false,
+      "call_to_actions": [
+        {
+          "title": "Opciones",
+          "type": "nested",
+          "call_to_actions": [
+            {
+              "title": "Empezar de nuevo",
+              "type": "postback",
+              "payload": "EMPEZAR_DE_NUEVO_PAYLOAD"
+            },
+            {
+              "title": "History",
+              "type": "postback",
+              "payload": "HISTORY_PAYLOAD"
+            }
+          ]
+        },
+        {
+          "type": "web_url",
+          "title": "Visitar web",
+          "url": "https://almundo.com.ar/",
+          "webview_height_ratio": "full"
+        }
+      ]
+    }
+  ]
+}' "https://graph.facebook.com/v2.6/me/messenger_profile?access_token= EAACkkvctpEwBAFaBJ16TmsAPkGPMcDIksqfGZA1ZAudELnoEVjZBNXFsyVyEFXsgyVjkhUHZBZADZCGsFZA6zwyZCGOXsNqZB2b55KZBsjpYBZBqCZAZA1MtHZC8YvZCHKbYoZCHU9TfGklQ5W1wZANRhR2TjgDQSlk9rIZBpmXkJgeuBuckzpDgZDZD"
+
+
+
+RESPUESTAS WIT
+
+Entidad propia
+{
+    "msg_id": "03J39qiDhVQVIysOt",
+    "_text": "tempera",
+    "entities": {
+        "intent": [
+            {
+                "confidence": 0.87695894513846,
+                "value": "temperature_get"
+            }
+        ]
+    }
+}
+
+Texto no reconocido
+{
+    "msg_id": "0mtD3FeUcfJA6LPBN",
+    "_text": "temp",
+    "entities": {}
+}
+
+Entidad date time
+{
+    "msg_id": "0P6N8Qv8K2Da1kG3P",
+    "_text": "mañana",
+    "entities": {
+        "datetime": [
+            {
+                "confidence": 0.968625,
+                "values": [
+                    {
+                        "value": "2017-10-14T00:00:00.000-03:00",
+                        "grain": "day",
+                        "type": "value"
+                    }
+                ],
+                "value": "2017-10-14T00:00:00.000-03:00",
+                "grain": "day",
+                "type": "value"
+            }
+        ]
+    }
+}
+
+
+
